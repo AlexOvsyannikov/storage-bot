@@ -31,7 +31,7 @@ help = """
 # list - Получить список товаров и полок
 # help - Помощь с применением команд
 
-@bot.message_handler(commands=["start", "put", "get", "searchcell", "searchitem", "scheme", "list", "help"])
+@bot.message_handler(commands=["start", "put", "get", "searchcell", "searchitem", "scheme", "list", "remote", "help"])
 def get_commands_messages(message):
     if message.text == "/start":
         bot.send_message(message.from_user.id, "Здравсвтуйте!")
