@@ -125,7 +125,13 @@ def get_commands_messages(message):
             for x in range(0, len(resp), 4096):
                 bot.send_message(message.chat.id, resp[x:x + 4096], parse_mode="HTML")
 
-
+    elif message.text == "/remote":
+        resp = talker.get_remote()
+        if len(resp) < 4096:
+            bot.send_message(message.from_user.id, text=resp, parse_mode='HTML')
+        else:
+            for x in range(0, len(resp), 4096):
+                bot.send_message(message.chat.id, resp[x:x + 4096], parse_mode="HTML")
 
     elif message.text == "/help":
         bot.send_message(message.from_user.id, text=help)
