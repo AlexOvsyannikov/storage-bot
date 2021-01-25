@@ -21,6 +21,7 @@ help = """
 /help - Помощь с применением команд       
 """
 
+
 # start - Запустить бота
 # put - Положить товар на склад
 # get - Забрать товар со склада
@@ -30,7 +31,7 @@ help = """
 # list - Получить список товаров и полок
 # help - Помощь с применением команд
 
-@bot.message_handler(commands=["start","put", "get", "searchcell", "searchitem", "scheme", "list", "help"])
+@bot.message_handler(commands=["start", "put", "get", "searchcell", "searchitem", "scheme", "list", "help"])
 def get_commands_messages(message):
     if message.text == "/start":
         bot.send_message(message.from_user.id, "Здравсвтуйте!")
@@ -51,10 +52,11 @@ def get_commands_messages(message):
         else:
             resp = talker.get(_text[-1])
 
-            if resp=="Position is empty":
+            if resp == "Position is empty":
                 bot.send_message(message.from_user.id, text="Запрашиваемая позиция пуста")
             elif resp == "NO SUCH UUID OR CELL NAME FOUND":
-                bot.send_message(message.from_user.id, text="Позиция не найдена, проверьте правильность написания идентификатора")
+                bot.send_message(message.from_user.id,
+                                 text="Позиция не найдена, проверьте правильность написания идентификатора")
             elif resp == "ERROR":
                 bot.send_message(message.from_user.id, text="Произошла ошибка")
             elif resp == "OK":
@@ -65,11 +67,11 @@ def get_commands_messages(message):
 
     elif message.text.split()[0] == "/searchcell":
         _text = message.text.split()
-        if len(_text)!=2:
+        if len(_text) != 2:
             bot.send_message(message.from_user.id, text="Неправильно введен аргумент")
         else:
             _cell = talker.get_cell(_text[-1])
-            if _cell !="Неправильная ячейка":
+            if _cell != "Неправильная ячейка":
                 resp = f"Имя: {_cell.name}\n" \
                        f"Объединена: {'Да' if _cell.merged else 'Нет'}\n" \
                        f"Объединена с: {_cell.merged_with if _cell.merged else '-'}\n" \
@@ -79,7 +81,7 @@ def get_commands_messages(message):
                        f"<b>Сведения о товаре:</b>\n" \
                        f"Занята товаром: {'Да' if _cell.busy else 'Нет'}\n" \
                        f"Название товара: {_cell.contained_item.name if _cell.contained_item else '-'}\n" \
-                       f"UUID товара: {'<code>'+_cell.contained_item.uuid+'</code>' if  _cell.contained_item else '-'}\n" \
+                       f"UUID товара: {'<code>' + _cell.contained_item.uuid + '</code>' if _cell.contained_item else '-'}\n" \
                        f"Масса товара: {_cell.contained_item.mass if _cell.contained_item else '-'}"
                 bot.send_message(message.from_user.id, text=resp, parse_mode="HTML")
 
@@ -95,7 +97,7 @@ def get_commands_messages(message):
             if _cell != "Неправильный uuid":
                 resp = f"Название товара: {_cell.contained_item.name if _cell.contained_item else '-'}\n" \
                        f"Масса товара: {_cell.contained_item.mass if _cell.contained_item else '-'}\n\n" \
-                       f"<b>Сведения о полке:</b>\n"\
+                       f"<b>Сведения о полке:</b>\n" \
                        f"Имя полки: {_cell.name}\n" \
                        f"Объединена: {'Да' if _cell.merged else 'Нет'}\n" \
                        f"Объединена с: {_cell.merged_with if _cell.merged else '-'}\n" \
@@ -116,8 +118,8 @@ def get_commands_messages(message):
         all_cells = talker.get_list_of_all()
         resp = ""
         for cell in all_cells:
-            resp += f"Полка: {cell.name if not cell.merged else cell.merged_with}; Название товара:{cell.contained_item.name if cell.contained_item else 'Свободно'}; UUID товара: {'<code>'+cell.contained_item.uuid+'</code>' if  cell.contained_item else '-'}; Масса товара: {cell.contained_item.mass if cell.contained_item else '-'} кг.\n\n"
-        if len(resp)<4096:
+            resp += f"Полка: {cell.name if not cell.merged else cell.merged_with}; Название товара:{cell.contained_item.name if cell.contained_item else 'Свободно'}; UUID товара: {'<code>' + cell.contained_item.uuid + '</code>' if cell.contained_item else '-'}; Масса товара: {cell.contained_item.mass if cell.contained_item else '-'} кг.\n\n"
+        if len(resp) < 4096:
             bot.send_message(message.from_user.id, text=resp, parse_mode='HTML')
         else:
             for x in range(0, len(resp), 4096):
@@ -127,6 +129,7 @@ def get_commands_messages(message):
 
     elif message.text == "/help":
         bot.send_message(message.from_user.id, text=help)
+
 
 @bot.message_handler(content_types=["document"])
 def handle_document(message):

@@ -43,7 +43,7 @@ class BackendTalker:
             return pickle.loads(unbased)
 
     def get(self, cell_name):
-        if len(cell_name)==2:
+        if len(cell_name) == 2:
             resp = requests.get(self.adr + "/get_item_from_storage", params={"cell_name": cell_name})
         else:
             resp = requests.get(self.adr + "/get_item_from_storage", params={"uuid": cell_name})
@@ -52,5 +52,5 @@ class BackendTalker:
 
     def put(self, xls_file):
         based = base64.b64encode(xls_file)
-        resp = requests.post(self.adr+"/put_items_to_storage", data=based)
+        resp = requests.post(self.adr + "/put_items_to_storage", data=based)
         return resp
