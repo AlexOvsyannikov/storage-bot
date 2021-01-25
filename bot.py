@@ -144,6 +144,9 @@ def handle_document(message):
             bot.send_message(message.from_user.id, text="Товары из накладной добавлены на склад")
             _img = open("/Users/ovsannikovaleksandr/Desktop/предпроф/back/templates/img/scheme.png", "rb")
             bot.send_photo(message.from_user.id, photo=_img)
+        elif _resp.text == "CANNOT BE OPENED":
+            bot.send_message(message.from_user.id, text="Не удалось открыть файл")
+
         else:
             bot.send_message(message.from_user.id, text="Произошла ошибка")
 
@@ -153,4 +156,4 @@ def handle_document(message):
 
 
 talker = BackendTalker(host="192.168.0.109", port=3000)
-bot.polling(none_stop=True, interval=randint(0, 3))
+bot.infinity_polling(interval=randint(0, 3))
