@@ -63,6 +63,5 @@ class BackendTalker:
         data_splitted = text.split("</p>")
         data_splitted.pop(-1)
         text = "".join(data_splitted).replace("<br/>", "\n").replace("                ", " ").replace("            ", " ")
-        print(text)
         return text
 
