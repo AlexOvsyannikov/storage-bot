@@ -62,7 +62,7 @@ def get_commands_messages(message):
                 bot.send_message(message.from_user.id, text="Произошла ошибка")
             elif resp == "OK":
                 bot.send_message(message.from_user.id, text="Позиция выдана со склада")
-                _img = open("/Users/ovsannikovaleksandr/Desktop/предпроф/back/templates/img/scheme.png", "rb")
+                _img = open("/Users/ovsannikovaleksandr/Desktop/предпроф/back/static/img/scheme.png", "rb")
                 bot.send_photo(message.from_user.id, photo=_img)
 
 
@@ -112,7 +112,7 @@ def get_commands_messages(message):
 
     elif message.text == "/scheme":
         talker.get_scheme()
-        _img = open("/Users/ovsannikovaleksandr/Desktop/предпроф/back/templates/img/scheme.png", "rb")
+        _img = open("/Users/ovsannikovaleksandr/Desktop/предпроф/back/static/img/scheme.png", "rb")
         bot.send_photo(message.from_user.id, photo=_img)
 
     elif message.text == "/list":
@@ -128,6 +128,8 @@ def get_commands_messages(message):
 
     elif message.text == "/remote":
         resp = talker.get_remote()
+        if resp == "":
+            bot.send_message(message.from_user.id, text="Удаленный склад пуст")
         if len(resp) < 4096:
             bot.send_message(message.from_user.id, text=resp, parse_mode='HTML')
         else:
@@ -145,13 +147,17 @@ def handle_document(message):
     if ".xlsx" in message.document.file_name:
         file = requests.get('https://api.telegram.org/file/bot{0}/{1}'.format(token, file_info.file_path))
         print('https://api.telegram.org/file/bot{0}/{1}'.format(token, file_info.file_path))
-        _resp = talker.put(file.content)
+        bot.send_message(message.from_user.id, text="Добавляю товары на склад...")
 
-        if _resp.text == "OK":
+        _data = talker.put(file.content).text.split(".")
+        print(_data)
+        _resp = _data[0]
+
+        if _resp == "OK":
             bot.send_message(message.from_user.id, text="Товары из накладной добавлены на склад")
-            _img = open("/Users/ovsannikovaleksandr/Desktop/предпроф/back/templates/img/scheme.png", "rb")
+            _img = open("/Users/ovsannikovaleksandr/Desktop/предпроф/back/static/img/scheme.png", "rb")
             bot.send_photo(message.from_user.id, photo=_img)
-        elif _resp.text == "CANNOT BE OPENED":
+        elif _resp == "CANNOT BE OPENED":
             bot.send_message(message.from_user.id, text="Не удалось открыть файл")
 
         else:
