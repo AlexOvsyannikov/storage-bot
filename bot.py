@@ -150,7 +150,6 @@ def handle_document(message):
         bot.send_message(message.from_user.id, text="Добавляю товары на склад...")
 
         _data = talker.put(file.content).text.split(".")
-        print(_data)
         _resp = _data[0]
 
         if _resp == "OK":
@@ -164,7 +163,16 @@ def handle_document(message):
             bot.send_message(message.from_user.id, text="Произошла ошибка")
 
         if _data[1] == "1":
-            _pdf = talker.get_main_pdf()
+            talker.get_main_pdf()
+            bot.send_message(message.from_user.id, text="Отчет о добавлении товаров на склад:")
+            _pdf = open("Отчет о добавлении товаров на склад.pdf", "rb")
+            bot.send_document(message.from_user.id, data=_pdf)
+
+        if _data[2] == "1":
+            talker.get_remote_pdf()
+            bot.send_message(message.from_user.id, text="Отчет о добавлении товаров на удаленный склад:")
+            _pdf = open("Отчет о добавлении товаров на удаленный склад.pdf", "rb")
+            bot.send_document(message.from_user.id, data=_pdf)
 
     else:
         bot.send_message(message.from_user.id, text="Формат файла не поддерживается")
