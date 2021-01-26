@@ -1,3 +1,5 @@
+import time
+
 import requests
 import telebot
 import urllib
@@ -51,7 +53,7 @@ def get_commands_messages(message):
         if len(_text) != 2:
             bot.send_message(message.from_user.id, text="Неправильно введен аргумент")
         else:
-            resp = talker.get(_text[-1])
+            resp = talker.get(_text[-1].upper())
 
             if resp == "Position is empty":
                 bot.send_message(message.from_user.id, text="Запрашиваемая позиция пуста")
@@ -71,7 +73,7 @@ def get_commands_messages(message):
         if len(_text) != 2:
             bot.send_message(message.from_user.id, text="Неправильно введен аргумент")
         else:
-            _cell = talker.get_cell(_text[-1])
+            _cell = talker.get_cell(_text[-1].upper())
             if _cell != "Неправильная ячейка":
                 resp = f"Имя: {_cell.name}\n" \
                        f"Объединена: {'Да' if _cell.merged else 'Нет'}\n" \
@@ -179,4 +181,12 @@ def handle_document(message):
 
 
 talker = BackendTalker(host="192.168.0.109", port=3000)
-bot.infinity_polling(interval=randint(0, 3))
+
+while True:
+    try:
+        bot.polling(none_stop=True, interval=randint(0, 3))
+
+    except Exception as e:
+        telebot.logger.error(e)  # или просто print(e) если у вас логгера нет,
+        # или import traceback; traceback.print_exc() для печати полной инфы
+        time.sleep(15)
