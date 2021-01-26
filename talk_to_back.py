@@ -65,3 +65,12 @@ class BackendTalker:
         text = "".join(data_splitted).replace("<br/>", "\n").replace("                ", " ").replace("            ", " ")
         return text
 
+    def get_main_pdf(self):
+        resp = requests.get(self.adr+"/get_pdf_main")
+        with open("Отчет о добавлении товаров на склад.pdf", "wb") as f:
+            f.write(resp.content)
+
+    def get_remote_pdf(self):
+        resp = requests.get(self.adr+"/get_pdf_remote")
+        with open("Отчет о добавлении товаров на удаленный склад.pdf", "wb") as f:
+            f.write(resp.content)

@@ -163,6 +163,8 @@ def handle_document(message):
         else:
             bot.send_message(message.from_user.id, text="Произошла ошибка")
 
+        if _data[1] == "1":
+            _pdf = talker.get_main_pdf()
 
     else:
         bot.send_message(message.from_user.id, text="Формат файла не поддерживается")
