@@ -121,12 +121,16 @@ def get_commands_messages(message):
         all_cells = talker.get_list_of_all()
         resp = ""
         for cell in all_cells:
-            resp += f"Полка: {cell.name if not cell.merged else cell.merged_with}; Название товара:{cell.contained_item.name if cell.contained_item else 'Свободно'}; UUID товара: {'<code>' + cell.contained_item.uuid + '</code>' if cell.contained_item else '-'}; Масса товара: {cell.contained_item.mass if cell.contained_item else '-'} кг.\n\n"
-        if len(resp) < 4096:
-            bot.send_message(message.from_user.id, text=resp, parse_mode='HTML')
+            if cell.busy:
+                resp += f"Полка: {cell.name if not cell.merged else cell.merged_with}; Название товара:{cell.contained_item.name if cell.contained_item else 'Свободно'}; UUID товара: {'<code>' + cell.contained_item.uuid + '</code>' if cell.contained_item else '-'}; Масса товара: {cell.contained_item.mass if cell.contained_item else '-'} кг.\n\n"
+        if resp!="":
+            if len(resp) < 4096:
+                bot.send_message(message.from_user.id, text=resp, parse_mode='HTML')
+            else:
+                for x in range(0, len(resp), 4096):
+                    bot.send_message(message.chat.id, resp[x:x + 4096], parse_mode="HTML")
         else:
-            for x in range(0, len(resp), 4096):
-                bot.send_message(message.chat.id, resp[x:x + 4096], parse_mode="HTML")
+            bot.send_message(message.from_user.id, text="Склад пуст", parse_mode='HTML')
 
     elif message.text == "/remote":
         resp = talker.get_remote()
